@@ -1,0 +1,57 @@
+.registerMainContainer {
+    width: 30%;
+    height: 80%;
+    background-color: rgba(68, 68, 68, 0.3);
+    border-radius: 50px;
+    display: grid;
+    grid-template-rows: 40% 15% 45;
+    place-items: center;
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+}
+
+
+
+.registerMainContainer button {
+    width: 70%;
+    border: 1px solid #444;
+}
+
+.registerMainContainer input {
+    width: 60%;
+    border-radius: 30px;
+    font-size: 1.3rem;
+    border: 1px white solid;
+    background-color: inherit;
+    text-align: center;
+    padding: .3rem
+}
+
+.register,
+.login {
+    width: 75%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.logo {
+    width: 50%;
+    aspect-ratio: 1/1;
+    border: solid 5px rgb(100, 100, 100);
+    border-radius: 500px;
+}
+
+.title {
+    text-align: center;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    letter-spacing: 1rem;
+}
+
+.noMatch {
+    border: darkred solid 1px !important;
+    background-color: rgba(255, 100, 100, 0.5) !important;
+}
