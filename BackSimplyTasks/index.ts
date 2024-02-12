@@ -10,6 +10,11 @@ server.get("/", (req: Request, res: Response) => {
     res.status(200).send("Getter");
 });
 
-server.listen(6969, () => {
-    console.log("Server HTTP 6969");
+server.post("/registerUser", (req: Request, res: Response) => {
+    console.log(req.body);
+    res.status(200).send("Properly registered");
+});
+
+server.listen(4545, () => {
+    console.log("Server HTTP 4545");
 });

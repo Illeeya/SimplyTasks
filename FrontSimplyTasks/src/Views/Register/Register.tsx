@@ -35,6 +35,7 @@ export default function Register() {
             const response = await fetch("http://localhost:4545/registerUser", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
             });
             if (response.ok) {
                 alert("Registered properly on backend!");
