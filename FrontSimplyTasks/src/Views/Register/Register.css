@@ -10,8 +10,6 @@
     padding: 1rem;
 }
 
-
-
 .registerMainContainer button {
     width: 70%;
     border: 1px solid #444;
@@ -36,6 +34,12 @@
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
+}
+
+.register>p {
+    height: 1rem;
+    font-size: 1rem;
+    color: rgb(226, 125, 125);
 }
 
 .logo {

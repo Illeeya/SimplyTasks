@@ -15,18 +15,35 @@ export default function Register() {
         username: "",
         password: "",
         confirmPassword: "",
-        pwMatch: false,
+        pwMatch: true,
     };
     const navigate = useNavigate();
     const [data, setData] = useState<Data>(defaultData);
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
         setData((prevData) => {
             const newData = { ...prevData, [e.target.name]: e.target.value };
-            if (e.target.name === "confirmPassword") {
-                newData.pwMatch = newData.password === newData.confirmPassword;
+            if (e.target.name === "confirmPassword" || e.target.name === "password") {
+                if (newData.password.length > 0 && newData.confirmPassword.length > 0)
+                    newData.pwMatch = newData.password === newData.confirmPassword;
             }
             return newData;
         });
+    }
+
+    async function registerOnBackend(data: Data): Promise<void> {
+        try {
+            const response = await fetch("http://localhost:4545/registerUser", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+            });
+            if (response.ok) {
+                alert("Registered properly on backend!");
+            } else {
+                alert("Error on backend!");
+            }
+        } catch (error) {
+            alert(`Catch error!: ${error}`);
+        }
     }
 
     return (
@@ -72,9 +89,10 @@ export default function Register() {
                     id="confirmPassword"
                     className={data.pwMatch ? "" : "noMatch"}
                 />
+                <p>{!data.pwMatch && "Passwords do not match!"}</p>
                 <button
                     onClick={() => {
-                        alert(`Registered as ${data.username} with pw: ${data.password} `);
+                        registerOnBackend(data);
                     }}
                 >
                     Register
