@@ -4,13 +4,13 @@
     background-color: rgba(68, 68, 68, 0.3);
     border-radius: 50px;
     display: grid;
-    grid-template-rows: 40% 15% 45;
+    grid-template-rows: 40% 15% 45%;
     place-items: center;
     backdrop-filter: blur(10px);
     padding: 1rem;
 }
 
-.forms {
+.homeMainContainer>.forms {
     border-top: dashed 1px #444;
     width: 100%;
     display: grid;
@@ -18,12 +18,12 @@
     place-items: center;
 }
 
-.forms button {
+.homeMainContainer>.forms button {
     width: 70%;
     border: 1px solid #444;
 }
 
-.forms input {
+.homeMainContainer>.forms input {
     width: 60%;
     border-radius: 30px;
     font-size: 1.3rem;
@@ -33,8 +33,8 @@
     padding: .3rem
 }
 
-.register,
-.login {
+.homeMainContainer>.register,
+.homeMainContainer>.login {
     width: 75%;
     display: flex;
     align-items: center;
@@ -44,14 +44,14 @@
     padding: 1rem;
 }
 
-.logo {
+.homeMainContainer>.logo {
     width: 50%;
     aspect-ratio: 1/1;
     border: solid 5px rgb(100, 100, 100);
     border-radius: 500px;
 }
 
-.title {
+.homeMainContainer>.title {
     text-align: center;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     letter-spacing: 1rem;

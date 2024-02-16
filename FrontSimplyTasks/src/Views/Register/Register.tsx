@@ -1,51 +1,10 @@
-import { useNavigate } from "react-router-dom";
 import "./Register.css";
 import logoDark from "../../assets/LogoDark.png";
-import { ChangeEvent, useState } from "react";
+import useRegister from "./useRegister";
+import { BeatLoader } from "react-spinners";
 export default function Register() {
-    type Data = {
-        email: string;
-        username: string;
-        password: string;
-        confirmPassword: string;
-        pwMatch: boolean;
-    };
-    const defaultData: Data = {
-        email: "",
-        username: "",
-        password: "",
-        confirmPassword: "",
-        pwMatch: true,
-    };
-    const navigate = useNavigate();
-    const [data, setData] = useState<Data>(defaultData);
-    function handleChange(e: ChangeEvent<HTMLInputElement>) {
-        setData((prevData) => {
-            const newData = { ...prevData, [e.target.name]: e.target.value };
-            if (e.target.name === "confirmPassword" || e.target.name === "password") {
-                if (newData.password.length > 0 && newData.confirmPassword.length > 0)
-                    newData.pwMatch = newData.password === newData.confirmPassword;
-            }
-            return newData;
-        });
-    }
-
-    async function registerOnBackend(data: Data): Promise<void> {
-        try {
-            const response = await fetch("http://localhost:4545/registerUser", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-            if (response.ok) {
-                alert("Registered properly on backend!");
-            } else {
-                alert("Error on backend!");
-            }
-        } catch (error) {
-            alert(`Catch error!: ${error}`);
-        }
-    }
+    const { data, loading, validation, registerOnBackend, handleChange, navigate } =
+        useRegister();
 
     return (
         <div className="registerMainContainer">
@@ -56,48 +15,73 @@ export default function Register() {
                     value={data.email}
                     placeholder="email@example.com"
                     type="email"
+                    maxLength={50}
                     name="email"
                     id="email"
+                    className={validation.emailValid || data.email === "" ? "" : "noMatch"}
                 />
+                <p>{validation.emailValid || data.email === "" ? "" : "Invalid email!"}</p>
                 <input
-                    onChange={(e) => {
-                        handleChange(e);
-                    }}
+                    onChange={handleChange}
                     value={data.username}
                     placeholder="Username..."
                     type="text"
+                    maxLength={50}
                     name="username"
                     id="username"
+                    className={
+                        validation.usernameValid || data.username === "" ? "" : "noMatch"
+                    }
                 />
+                <p>
+                    {validation.usernameValid || data.username === ""
+                        ? ""
+                        : "Invalid username!"}
+                </p>
                 <input
-                    onChange={(e) => {
-                        handleChange(e);
-                    }}
+                    onChange={handleChange}
                     value={data.password}
                     placeholder="Password..."
                     type="password"
+                    maxLength={50}
                     name="password"
                     id="password"
                 />
                 <input
-                    onChange={(e) => {
-                        handleChange(e);
-                    }}
+                    onChange={handleChange}
                     value={data.confirmPassword}
                     placeholder="Confirm Password..."
                     type="password"
+                    maxLength={50}
                     name="confirmPassword"
                     id="confirmPassword"
-                    className={data.pwMatch ? "" : "noMatch"}
+                    className={
+                        validation.pwMatch || data.confirmPassword === "" ? "" : "noMatch"
+                    }
                 />
-                <p>{!data.pwMatch && "Passwords do not match!"}</p>
-                <button
-                    onClick={() => {
-                        registerOnBackend(data);
-                    }}
-                >
-                    Register
-                </button>
+                <p>
+                    {validation.pwMatch || data.confirmPassword === ""
+                        ? ""
+                        : "Passwords do not match!"}
+                </p>
+                <div className="loaderButton">
+                    {loading ? (
+                        <BeatLoader className="beatLoader" color="#888" />
+                    ) : (
+                        <button
+                            onClick={() => {
+                                registerOnBackend(data);
+                            }}
+                            disabled={
+                                !validation.emailValid ||
+                                !validation.usernameValid ||
+                                !validation.pwMatch
+                            }
+                        >
+                            Register
+                        </button>
+                    )}
+                </div>
             </div>
             <div className="login">
                 <p>Already have an account?</p>
