@@ -19,13 +19,17 @@ server.use(limiter);
 
 // const myUser = { username: "tester3", password: "yess" };
 
-server.get("/login", async (req: Request, res: Response) => {
+server.post("/login", async (req: Request, res: Response) => {
     console.log("Login request");
     const result = await Login(req.body);
     if (result !== "unknown") {
-        res.status(200).send(result);
+        res.status(200).send(
+            JSON.stringify({ success: true, message: "Login successful", userId: result })
+        );
     } else {
-        res.status(500).send("Invalid username or password!");
+        res.status(500).send(
+            JSON.stringify({ success: true, message: "Invalid username or password!" })
+        );
     }
 });
 

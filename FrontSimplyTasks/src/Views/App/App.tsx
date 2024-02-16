@@ -1,28 +1,18 @@
-import { Link, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Home from "../Home/Home";
-import Login from "../Login/Login";
 import Register from "../Register/Register";
+import useApp from "./useApp";
+import Tasklist from "../Tasklist/Tasklist";
 
 function App() {
+    const { loggedUserId, changeLoggedUser } = useApp();
+
     return (
         <>
-            {/* <nav>
-                <ul>
-                    <li>
-                        <Link to={"/"}>Home</Link>
-                    </li>
-                    <li>
-                        <Link to={"/login"}>Login</Link>
-                    </li>
-                    <li>
-                        <Link to={"/register"}>Register</Link>
-                    </li>
-                </ul>
-            </nav> */}
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<Home changeLoggedUser={changeLoggedUser} />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/tasklist" element={<Tasklist userId={loggedUserId} />} />
             </Routes>
         </>
     );

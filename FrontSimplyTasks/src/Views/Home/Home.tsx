@@ -1,10 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import logoDark from "../../assets/LogoDark.png";
 import "./Home.css";
+import useHome from "./useHome";
 
-export default function Home() {
+type Props = {
+    changeLoggedUser: (userId: string) => void;
+};
+export default function Home(props: Props) {
     const navigate = useNavigate();
-
+    const { data, dataValid, handleChange, Login } = useHome(props);
     return (
         <div className="homeMainContainer">
             <img className="logo" src={logoDark} alt="SimplyTasksLogo" />
@@ -14,9 +18,23 @@ export default function Home() {
             </h1>
             <div className="forms">
                 <div className="login">
-                    <input placeholder="Username..." type="text" />
-                    <input placeholder="Password..." type="password" />
-                    <button onClick={() => navigate("/login")} className="btn">
+                    <input
+                        value={data.username}
+                        onChange={handleChange}
+                        name="username"
+                        placeholder="Username..."
+                        type="text"
+                        maxLength={50}
+                    />
+                    <input
+                        value={data.password}
+                        onChange={handleChange}
+                        name="password"
+                        placeholder="Password..."
+                        type="password"
+                        maxLength={50}
+                    />
+                    <button onClick={() => Login()} className="btn" disabled={!dataValid}>
                         Login
                     </button>
                 </div>
