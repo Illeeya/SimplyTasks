@@ -5,6 +5,7 @@ type User = {
     email: string;
     username: string;
     password: string;
+    salt: string;
 };
 export default async function CreateUser(user: User) {
     try {
