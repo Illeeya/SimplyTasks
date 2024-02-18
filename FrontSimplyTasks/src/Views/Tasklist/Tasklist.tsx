@@ -1,10 +1,17 @@
 import "./Tasklist.css";
 import useTasklist from "./useTasklist";
-type Props = {
-    userId: string;
-};
-export default function Tasklist({ userId }: Props) {
-    const {} = useTasklist(userId);
+export default function Tasklist() {
+    const { tasksJsx, logOut } = useTasklist();
 
-    return <div className=""></div>;
+    return (
+        <div className="tasklistMainContainer">
+            <nav>
+                <button className="logOutBtn" onClick={logOut}>
+                    LogOut
+                </button>
+                <button className="addTaskBtn">Add Task</button>
+            </nav>
+            <div className="tasks">{tasksJsx}</div>
+        </div>
+    );
 }

@@ -21,13 +21,14 @@ server.use(limiter);
 server.get("/tasks/:userId", async (req: Request, res: Response) => {
     const userId = req.params.userId;
     console.log("Getting tasks for user " + userId);
-    const tasks = await GetTasks(userId);
-    if (tasks.length > 0) {
+    const result = await GetTasks(userId);
+    if (result.success) {
+        const tasks = result.tasks;
         console.log(tasks);
-        res.status(200).send(tasks);
+        res.status(200).send({ tasks });
     } else {
-        console.log("No tasks");
-        res.status(500).send(JSON.stringify({ success: false, message: "No tasks found" }));
+        console.log("Ewwow");
+        res.status(500).send(JSON.stringify(result));
     }
 });
 

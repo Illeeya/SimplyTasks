@@ -2,10 +2,6 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-type Props = {
-    changeLoggedUser: (userId: string) => void;
-};
-
 type Data = {
     username: string;
     password: string;
@@ -16,11 +12,16 @@ const defaultData: Data = {
     password: "",
 };
 
-export default function useHome(props: Props) {
+export default function useHome() {
     const navigate = useNavigate();
 
     const [data, setData] = useState<Data>(defaultData);
     const [dataValid, setDataValid] = useState<boolean>(false);
+
+    useEffect(() => {
+        const storedId = localStorage.getItem("simplyTasksUser");
+        if (storedId !== "") navigate("/tasklist");
+    }, []);
 
     useEffect(() => {
         if (
@@ -47,7 +48,7 @@ export default function useHome(props: Props) {
             });
             const responseData = await response.json();
             if (response.ok && responseData.userId) {
-                props.changeLoggedUser(responseData.userId);
+                localStorage.setItem("simplyTasksUser", responseData.userId);
                 navigate("/Tasklist");
             } else {
                 toast.error("Login error: " + responseData.message, {

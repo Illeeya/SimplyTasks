@@ -68,6 +68,7 @@ export default function useRegister() {
                         hideProgressBar: false,
                         autoClose: 2000,
                     });
+                    navigate("/");
                 } else {
                     toast.error("Registration error: " + responseData.message, {
                         theme: "dark",

@@ -3,12 +3,9 @@ import logoDark from "../../assets/LogoDark.png";
 import "./Home.css";
 import useHome from "./useHome";
 
-type Props = {
-    changeLoggedUser: (userId: string) => void;
-};
-export default function Home(props: Props) {
+export default function Home() {
     const navigate = useNavigate();
-    const { data, dataValid, handleChange, Login } = useHome(props);
+    const { data, dataValid, handleChange, Login } = useHome();
     return (
         <div className="homeMainContainer">
             <img className="logo" src={logoDark} alt="SimplyTasksLogo" />

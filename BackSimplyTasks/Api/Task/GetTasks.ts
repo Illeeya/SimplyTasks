@@ -8,7 +8,9 @@ export default async function GetTasks(userId: string) {
         const collection = database.collection("Tasks");
         const tasksCoursor = collection.find({ ownerId: userId });
         const tasks = await tasksCoursor.toArray();
-        return tasks;
+        return { success: true, tasks: tasks };
+    } catch (error) {
+        return { success: false, message: `${error}` };
     } finally {
         await client.close();
     }
