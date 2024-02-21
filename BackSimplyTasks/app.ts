@@ -1,11 +1,9 @@
 import express, { Express, Request, Response, json } from "express";
 import cors from "cors";
 import Register from "./Helpers/RegistrationHelper";
-import GetUser from "./Api/User/GetUser";
-import CreateUser from "./Api/User/CreateUser";
 import rateLimit from "express-rate-limit";
 import Login from "./Helpers/LoginHelper";
-import GetTasks from "./Api/Task/GetTasks";
+import TaskBaseHandler from "./Api/Task/TaskBaseHandler";
 
 const limiter = rateLimit({
     windowMs: 60000,
@@ -18,18 +16,45 @@ server.use(json());
 server.use(cors());
 server.use(limiter);
 
+server.get("/test", async (req: Request, res: Response) => {
+    setTimeout(() => {
+        res.status(200).send("test");
+    }, 5000);
+});
+
 server.get("/tasks/:userId", async (req: Request, res: Response) => {
     const userId = req.params.userId;
-    console.log("Getting tasks for user " + userId);
-    const result = await GetTasks(userId);
+    const result = await TaskBaseHandler("GET", userId);
     if (result.success) {
-        const tasks = result.tasks;
+        const tasks = result.message;
         console.log(tasks);
         res.status(200).send({ tasks });
     } else {
         console.log("Ewwow");
         res.status(500).send(JSON.stringify(result));
     }
+});
+
+server.delete("/deleteTask/:taskId", async (req: Request, res: Response) => {
+    const taskId = req.params.taskId;
+    const result = await TaskBaseHandler("DELETE", taskId);
+    res.status(result.success ? 200 : 500).send(
+        result.success ? "Task deleted" : result.message
+    );
+});
+
+server.put("/updateTask/:taskId", async (req: Request, res: Response) => {
+    console.log("Updating task!");
+    const taskId = req.params.taskId;
+    const result = await TaskBaseHandler(
+        "UPDATE",
+        taskId,
+        req.body.text,
+        req.body.modifiedDate
+    );
+    res.status(result.success ? 200 : 500).send(
+        result.success ? "Task updated" : result.message
+    );
 });
 
 server.post("/login", async (req: Request, res: Response) => {
@@ -52,6 +77,6 @@ server.post("/registerUser", async (req: Request, res: Response) => {
     res.status(message.success ? 200 : 500).send(JSON.stringify(message));
 });
 
-server.listen(4545, () => {
-    console.log("Server HTTP 4545");
+server.listen(8080, () => {
+    console.log("Server HTTP 8080");
 });

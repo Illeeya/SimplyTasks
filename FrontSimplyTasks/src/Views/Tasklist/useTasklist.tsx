@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Task from "../../Components/Tasks/Task";
 import { useNavigate } from "react-router-dom";
+import config from "../../Config/config.json";
+import { ErrorToast } from "../../Helpers/ToastHelper";
 
 export default function useTasklist() {
     type Task = {
@@ -44,17 +46,27 @@ export default function useTasklist() {
     }
 
     async function updateTaskApi(taskId: string, text: string) {
-        const response = await fetch(`http://localhost:4545/updateTask/${taskId}`, {
+        const response = await fetch(`${config.backendUrl}/updateTask/${taskId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text }),
+            body: JSON.stringify({ text: text, modifiedDate: Date.now().toString() }),
         });
+        const responseData = await response.json();
 
+        if (!response.ok) {
+            ErrorToast(`Server error! ${responseData.message}`);
+            // toast.error(`Server error! ${responseData.message}`, {
+            //     theme: "dark",
+            //     pauseOnHover: true,
+            //     hideProgressBar: false,
+            //     autoClose: 3000,
+            // });
+        }
         return response.ok;
     }
 
     async function deleteTaskApi(taskId: string) {
-        const response = await fetch(`http://localhost:4545/deleteTask/${taskId}`, {
+        const response = await fetch(`${config.backendUrl}/deleteTask/${taskId}`, {
             method: "DELETE",
         });
 
@@ -68,12 +80,13 @@ export default function useTasklist() {
                 prev.map((task) => (task.taskId === taskId ? { ...task, text: text } : task))
             );
         else {
-            toast.error("Server error! Could not update task!", {
-                theme: "dark",
-                pauseOnHover: true,
-                hideProgressBar: false,
-                autoClose: 3000,
-            });
+            ErrorToast(`Server error!`);
+            // toast.error(`Server error!`, {
+            //     theme: "dark",
+            //     pauseOnHover: true,
+            //     hideProgressBar: false,
+            //     autoClose: 3000,
+            // });
         }
     }
 
@@ -82,18 +95,19 @@ export default function useTasklist() {
         if (deletedSuccessfully)
             setTasks((prev) => prev.filter((task) => task.taskId !== taskId));
         else {
-            toast.error("Server error! Could not delete the task!", {
-                theme: "dark",
-                pauseOnHover: true,
-                hideProgressBar: false,
-                autoClose: 3000,
-            });
+            ErrorToast(`Server error! Could not delete the task!`);
+            // toast.error("Server error! Could not delete the task!", {
+            //     theme: "dark",
+            //     pauseOnHover: true,
+            //     hideProgressBar: false,
+            //     autoClose: 3000,
+            // });
         }
     }
 
     async function getTasks(): Promise<void> {
         console.log("Getting tasks");
-        const response = await fetch(`http://localhost:4545/tasks/${userId}`, {
+        const response = await fetch(`https://localhost:443/tasks/${userId}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
         });
@@ -103,12 +117,13 @@ export default function useTasklist() {
         if (response.ok) {
             setTasks(responseData.tasks);
         } else {
-            toast.error("Couldn't load tasks: " + responseData.message, {
-                theme: "dark",
-                pauseOnHover: true,
-                hideProgressBar: false,
-                autoClose: 3000,
-            });
+            ErrorToast(`Couldn't load tasks: ${responseData.message}`);
+            // toast.error("Couldn't load tasks: " + responseData.message, {
+            //     theme: "dark",
+            //     pauseOnHover: true,
+            //     hideProgressBar: false,
+            //     autoClose: 3000,
+            // });
         }
     }
 

@@ -1,6 +1,7 @@
-import client from "../../Helpers/DatabaseHelper";
+import createMongoClient from "../../Helpers/DatabaseHelper";
 
 export default async function GetUser(username: string) {
+    const client = createMongoClient();
     try {
         await client.connect();
         const database = client.db("SimplyTasks");

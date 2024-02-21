@@ -1,6 +1,8 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import config from "../../Config/config.json";
+import { ErrorToast } from "../../Helpers/ToastHelper";
 
 type Data = {
     username: string;
@@ -38,7 +40,7 @@ export default function useHome() {
 
     async function Login(): Promise<void> {
         try {
-            const response = await fetch("http://localhost:4545/login", {
+            const response = await fetch(`${config.backendUrl}/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -51,20 +53,22 @@ export default function useHome() {
                 localStorage.setItem("simplyTasksUser", responseData.userId);
                 navigate("/Tasklist");
             } else {
-                toast.error("Login error: " + responseData.message, {
-                    theme: "dark",
-                    pauseOnHover: true,
-                    hideProgressBar: false,
-                    autoClose: 3000,
-                });
+                ErrorToast(`Login error: ${responseData.message}`);
+                // toast.error("Login error: " + responseData.message, {
+                //     theme: "dark",
+                //     pauseOnHover: true,
+                //     hideProgressBar: false,
+                //     autoClose: 3000,
+                // });
             }
         } catch (error) {
-            toast.error(`Login error: ${error}`, {
-                theme: "dark",
-                pauseOnHover: true,
-                hideProgressBar: false,
-                autoClose: 3000,
-            });
+            ErrorToast(`Login error: ${error}`);
+            // toast.error(`Login error: ${error}`, {
+            //     theme: "dark",
+            //     pauseOnHover: true,
+            //     hideProgressBar: false,
+            //     autoClose: 3000,
+            // });
         }
     }
 

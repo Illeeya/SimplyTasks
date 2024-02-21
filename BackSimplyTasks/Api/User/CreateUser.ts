@@ -1,4 +1,4 @@
-import client from "../../Helpers/DatabaseHelper";
+import createMongoClient from "../../Helpers/DatabaseHelper";
 
 type User = {
     userId: string;
@@ -8,6 +8,7 @@ type User = {
     salt: string;
 };
 export default async function CreateUser(user: User) {
+    const client = createMongoClient();
     try {
         await client.connect();
         const database = client.db("SimplyTasks");

@@ -1,6 +1,8 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import config from "../../Config/config.json";
+import { ErrorToast } from "../../Helpers/ToastHelper";
 
 export default function useRegister() {
     type Data = {
@@ -51,7 +53,7 @@ export default function useRegister() {
         if (validation.emailValid && validation.pwMatch && validation.usernameValid)
             try {
                 setLoading(true);
-                const response = await fetch("http://localhost:4545/registerUser", {
+                const response = await fetch(`${config.backendUrl}/registerUser`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -70,30 +72,33 @@ export default function useRegister() {
                     });
                     navigate("/");
                 } else {
-                    toast.error("Registration error: " + responseData.message, {
-                        theme: "dark",
-                        pauseOnHover: true,
-                        hideProgressBar: false,
-                        autoClose: 3000,
-                    });
+                    ErrorToast(`Registration error: ${responseData.message}`);
+                    // toast.error("Registration error: " + responseData.message, {
+                    //     theme: "dark",
+                    //     pauseOnHover: true,
+                    //     hideProgressBar: false,
+                    //     autoClose: 3000,
+                    // });
                 }
             } catch (error) {
-                toast.error("Caught error: " + error, {
-                    theme: "dark",
-                    pauseOnHover: true,
-                    hideProgressBar: false,
-                    autoClose: 3000,
-                });
+                ErrorToast(`Caught error: ${error}`);
+                // toast.error("Caught error: " + error, {
+                //     theme: "dark",
+                //     pauseOnHover: true,
+                //     hideProgressBar: false,
+                //     autoClose: 3000,
+                // });
             } finally {
                 setLoading(false);
             }
         else {
-            toast.error("Invalid data, cannot sent for registration!", {
-                theme: "dark",
-                pauseOnHover: true,
-                hideProgressBar: false,
-                autoClose: 3000,
-            });
+            ErrorToast(`Invalid data, cannot sent for registration!`);
+            // toast.error("Invalid data, cannot sent for registration!", {
+            //     theme: "dark",
+            //     pauseOnHover: true,
+            //     hideProgressBar: false,
+            //     autoClose: 3000,
+            // });
         }
     }
 
