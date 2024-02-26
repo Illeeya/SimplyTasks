@@ -2,11 +2,11 @@ import createMongoClient from "../../Helpers/DatabaseHelper";
 
 type User = {
     userId: string;
-    email: string;
     username: string;
     password: string;
     salt: string;
 };
+
 export default async function CreateUser(user: User) {
     const client = createMongoClient();
     try {

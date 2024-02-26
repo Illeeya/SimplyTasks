@@ -3,7 +3,6 @@ import { v4, v1 } from "uuid";
 import { hashPassword } from "./Crypto";
 import CreateUser from "../Api/User/CreateUser";
 type registerBody = {
-    email: string;
     username: string;
     password: string;
 };

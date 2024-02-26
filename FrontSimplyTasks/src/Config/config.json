@@ -1,3 +1,3 @@
 {
-    "backendUrl": "http://simplytasks.eu-central-1.elasticbeanstalk.com"
+    "backendUrl": "http://localhost:4545"
 }

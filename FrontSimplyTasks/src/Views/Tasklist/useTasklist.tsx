@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import Task from "../../Components/Tasks/Task";
 import { useNavigate } from "react-router-dom";
 import config from "../../Config/config.json";
@@ -8,18 +7,25 @@ import { ErrorToast } from "../../Helpers/ToastHelper";
 export default function useTasklist() {
     type Task = {
         taskId: string;
-        ownerId: string;
+        userId: string;
         text: string;
         creationDate: string;
-        modificationDate: string;
+        modifiedDate: string;
     };
-    const userId = localStorage.getItem("simplyTasksUser");
+    let userId = localStorage.getItem("simplyTasksUser");
     const [tasks, setTasks] = useState<Task[]>([]);
     const [tasksJsx, setTasksJsx] = useState<JSX.Element[]>([]);
 
     const navigate = useNavigate();
 
     useEffect(() => {
+        const loginDate = localStorage.getItem("simplyTasksLoginDate") || "";
+        const today = Date.now();
+        if (loginDate == "" || today > Number(loginDate) + 604800000) {
+            localStorage.setItem("simplyTasksUser", "");
+            userId = "";
+        }
+
         if (userId === "" || userId === null) {
             navigate("/");
         } else {
@@ -45,6 +51,22 @@ export default function useTasklist() {
         navigate("/");
     }
 
+    async function createTaskApi(task: Task) {
+        console.log(task);
+        const response = await fetch(`${config.backendUrl}/createTask`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(task),
+        });
+        console.log(response);
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            ErrorToast(`Server error! ${responseData.message}`);
+        }
+        return response.ok;
+    }
+
     async function updateTaskApi(taskId: string, text: string) {
         const response = await fetch(`${config.backendUrl}/updateTask/${taskId}`, {
             method: "PUT",
@@ -55,12 +77,6 @@ export default function useTasklist() {
 
         if (!response.ok) {
             ErrorToast(`Server error! ${responseData.message}`);
-            // toast.error(`Server error! ${responseData.message}`, {
-            //     theme: "dark",
-            //     pauseOnHover: true,
-            //     hideProgressBar: false,
-            //     autoClose: 3000,
-            // });
         }
         return response.ok;
     }
@@ -74,40 +90,51 @@ export default function useTasklist() {
     }
 
     async function handleDataChange(taskId: string, text: string) {
-        const updatedSuccessfully = await updateTaskApi(taskId, text);
-        if (updatedSuccessfully)
-            setTasks((prev) =>
-                prev.map((task) => (task.taskId === taskId ? { ...task, text: text } : task))
-            );
-        else {
-            ErrorToast(`Server error!`);
-            // toast.error(`Server error!`, {
-            //     theme: "dark",
-            //     pauseOnHover: true,
-            //     hideProgressBar: false,
-            //     autoClose: 3000,
-            // });
+        if (text === "" || text == null) {
+            handleDelete(taskId);
+        } else {
+            const updatedSuccessfully = await updateTaskApi(taskId, text);
+            if (updatedSuccessfully)
+                setTasks((prev) =>
+                    prev.map((task) =>
+                        task.taskId === taskId ? { ...task, text: text } : task
+                    )
+                );
+            else {
+                ErrorToast(`Server error!`);
+            }
+        }
+    }
+
+    async function handleCreate() {
+        if (tasks[0].text == "") return;
+        const task: Task = {
+            taskId: crypto.randomUUID(),
+            userId: userId!,
+            text: "",
+            creationDate: Date.now().toString(),
+            modifiedDate: Date.now().toString(),
+        };
+        setTasks((prev) => [task, ...prev]);
+        const createdSuccessfully = await createTaskApi(task);
+        if (!createdSuccessfully) {
+            setTasks((prev) => prev.filter((task) => task.taskId !== task.taskId));
+            ErrorToast(`Server error! Could not create the new task!`);
         }
     }
 
     async function handleDelete(taskId: string) {
+        setTasks((prev) => prev.filter((task) => task.taskId !== taskId));
         const deletedSuccessfully = await deleteTaskApi(taskId);
-        if (deletedSuccessfully)
-            setTasks((prev) => prev.filter((task) => task.taskId !== taskId));
-        else {
+        if (!deletedSuccessfully) {
+            await getTasks();
             ErrorToast(`Server error! Could not delete the task!`);
-            // toast.error("Server error! Could not delete the task!", {
-            //     theme: "dark",
-            //     pauseOnHover: true,
-            //     hideProgressBar: false,
-            //     autoClose: 3000,
-            // });
         }
     }
 
     async function getTasks(): Promise<void> {
         console.log("Getting tasks");
-        const response = await fetch(`https://localhost:443/tasks/${userId}`, {
+        const response = await fetch(`${config.backendUrl}/tasks/${userId}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
         });
@@ -118,14 +145,8 @@ export default function useTasklist() {
             setTasks(responseData.tasks);
         } else {
             ErrorToast(`Couldn't load tasks: ${responseData.message}`);
-            // toast.error("Couldn't load tasks: " + responseData.message, {
-            //     theme: "dark",
-            //     pauseOnHover: true,
-            //     hideProgressBar: false,
-            //     autoClose: 3000,
-            // });
         }
     }
 
-    return { tasksJsx, logOut };
+    return { tasksJsx, logOut, handleCreate };
 }

@@ -1,6 +1,6 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
 
-const credentials = "./Assets/X509-cert-6735106057220143552.pem";
+const credentials = "./Assets/mongoDbCert.pem";
 
 const createMongoClient = () => {
     return new MongoClient(

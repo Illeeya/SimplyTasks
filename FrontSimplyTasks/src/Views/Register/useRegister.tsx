@@ -6,25 +6,21 @@ import { ErrorToast } from "../../Helpers/ToastHelper";
 
 export default function useRegister() {
     type Data = {
-        email: string;
         username: string;
         password: string;
         confirmPassword: string;
     };
     type Validation = {
         pwMatch: boolean;
-        emailValid: boolean;
         usernameValid: boolean;
     };
     const defaultData: Data = {
-        email: "",
         username: "",
         password: "",
         confirmPassword: "",
     };
     const defaultValidation: Validation = {
         pwMatch: false,
-        emailValid: false,
         usernameValid: false,
     };
     const navigate = useNavigate();
@@ -42,22 +38,22 @@ export default function useRegister() {
                 pwMatch: data.password === data.confirmPassword,
             }));
     }, [data.password, data.confirmPassword]);
-    useEffect(() => {
-        setValidation((prev) => ({ ...prev, emailValid: isValidEmail(data.email) }));
-    }, [data.email]);
+    // Abandoned due to the safety issues - unavaliable HTTPS on backend
+    // useEffect(() => {
+    //     setValidation((prev) => ({ ...prev, emailValid: isValidEmail(data.email) }));
+    // }, [data.email]);
     useEffect(() => {
         setValidation((prev) => ({ ...prev, usernameValid: isValidUsername(data.username) }));
     }, [data.username]);
 
     async function registerOnBackend(data: Data): Promise<void> {
-        if (validation.emailValid && validation.pwMatch && validation.usernameValid)
+        if (validation.pwMatch && validation.usernameValid)
             try {
                 setLoading(true);
                 const response = await fetch(`${config.backendUrl}/registerUser`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        email: data.email,
                         username: data.username,
                         password: data.password,
                     }),
@@ -73,40 +69,23 @@ export default function useRegister() {
                     navigate("/");
                 } else {
                     ErrorToast(`Registration error: ${responseData.message}`);
-                    // toast.error("Registration error: " + responseData.message, {
-                    //     theme: "dark",
-                    //     pauseOnHover: true,
-                    //     hideProgressBar: false,
-                    //     autoClose: 3000,
-                    // });
                 }
             } catch (error) {
                 ErrorToast(`Caught error: ${error}`);
-                // toast.error("Caught error: " + error, {
-                //     theme: "dark",
-                //     pauseOnHover: true,
-                //     hideProgressBar: false,
-                //     autoClose: 3000,
-                // });
             } finally {
                 setLoading(false);
             }
         else {
             ErrorToast(`Invalid data, cannot sent for registration!`);
-            // toast.error("Invalid data, cannot sent for registration!", {
-            //     theme: "dark",
-            //     pauseOnHover: true,
-            //     hideProgressBar: false,
-            //     autoClose: 3000,
-            // });
         }
     }
 
-    function isValidEmail(email: string) {
-        return /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i.test(
-            email
-        );
-    }
+    // Abandoned due to the safety issues - unavaliable HTTPS on backend
+    // function isValidEmail(email: string) {
+    //     return /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i.test(
+    //         email
+    //     );
+    // }
 
     function isValidUsername(username: string) {
         return /^[a-zA-Z0-9]{1,25}$/.test(username);

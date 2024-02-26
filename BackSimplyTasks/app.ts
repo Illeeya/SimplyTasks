@@ -16,15 +16,13 @@ server.use(json());
 server.use(cors());
 server.use(limiter);
 
-server.get("/test", async (req: Request, res: Response) => {
-    setTimeout(() => {
-        res.status(200).send("test");
-    }, 5000);
+server.get("/", async (req: Request, res: Response) => {
+    res.status(200).send("Test successful. Endpoint works correctly.");
 });
 
 server.get("/tasks/:userId", async (req: Request, res: Response) => {
     const userId = req.params.userId;
-    const result = await TaskBaseHandler("GET", userId);
+    const result = await TaskBaseHandler("GET", { userId });
     if (result.success) {
         const tasks = result.message;
         console.log(tasks);
@@ -37,24 +35,39 @@ server.get("/tasks/:userId", async (req: Request, res: Response) => {
 
 server.delete("/deleteTask/:taskId", async (req: Request, res: Response) => {
     const taskId = req.params.taskId;
-    const result = await TaskBaseHandler("DELETE", taskId);
-    res.status(result.success ? 200 : 500).send(
-        result.success ? "Task deleted" : result.message
-    );
+    const result = await TaskBaseHandler("DELETE", { taskId });
+
+    const _message = result.success ? "Task deleted" : result.message;
+    const response = { success: result.success, message: _message };
+
+    res.status(result.success ? 200 : 500).send(JSON.stringify(response));
+});
+
+server.put("/createTask", async (req: Request, res: Response) => {
+    console.log("Creating task!");
+    const task = req.body;
+    const result = await TaskBaseHandler("CREATE", task);
+
+    const _message = result.success ? "Task created" : result.message;
+    const response = { success: result.success, message: _message };
+
+    res.status(result.success ? 200 : 500).send(JSON.stringify(response));
 });
 
 server.put("/updateTask/:taskId", async (req: Request, res: Response) => {
     console.log("Updating task!");
+    console.log(req.body);
     const taskId = req.params.taskId;
-    const result = await TaskBaseHandler(
-        "UPDATE",
+    const result = await TaskBaseHandler("UPDATE", {
         taskId,
-        req.body.text,
-        req.body.modifiedDate
-    );
-    res.status(result.success ? 200 : 500).send(
-        result.success ? "Task updated" : result.message
-    );
+        text: req.body.text,
+        modifiedDate: req.body.modifiedDate,
+    });
+
+    const _message = result.success ? "Task updated" : result.message;
+    const response = { success: result.success, message: _message };
+
+    res.status(result.success ? 200 : 500).send(JSON.stringify(response));
 });
 
 server.post("/login", async (req: Request, res: Response) => {
@@ -77,6 +90,6 @@ server.post("/registerUser", async (req: Request, res: Response) => {
     res.status(message.success ? 200 : 500).send(JSON.stringify(message));
 });
 
-server.listen(8080, () => {
-    console.log("Server HTTP 8080");
+server.listen(443, () => {
+    console.log("Server HTTP 443");
 });

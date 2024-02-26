@@ -1,6 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import config from "../../Config/config.json";
 import { ErrorToast } from "../../Helpers/ToastHelper";
 
@@ -21,7 +20,12 @@ export default function useHome() {
     const [dataValid, setDataValid] = useState<boolean>(false);
 
     useEffect(() => {
-        const storedId = localStorage.getItem("simplyTasksUser");
+        const loginDate = localStorage.getItem("simplyTasksLoginDate") || "";
+        const today = Date.now();
+        if (loginDate === "" || today > Number(loginDate) + 604800000) {
+            localStorage.setItem("simplyTasksUser", "");
+        }
+        const storedId = localStorage.getItem("simplyTasksUser") || "";
         if (storedId !== "") navigate("/tasklist");
     }, []);
 
@@ -51,24 +55,13 @@ export default function useHome() {
             const responseData = await response.json();
             if (response.ok && responseData.userId) {
                 localStorage.setItem("simplyTasksUser", responseData.userId);
+                localStorage.setItem("simplyTasksLoginDate", Date.now().toString());
                 navigate("/Tasklist");
             } else {
                 ErrorToast(`Login error: ${responseData.message}`);
-                // toast.error("Login error: " + responseData.message, {
-                //     theme: "dark",
-                //     pauseOnHover: true,
-                //     hideProgressBar: false,
-                //     autoClose: 3000,
-                // });
             }
         } catch (error) {
             ErrorToast(`Login error: ${error}`);
-            // toast.error(`Login error: ${error}`, {
-            //     theme: "dark",
-            //     pauseOnHover: true,
-            //     hideProgressBar: false,
-            //     autoClose: 3000,
-            // });
         }
     }
 

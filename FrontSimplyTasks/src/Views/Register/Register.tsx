@@ -9,8 +9,19 @@ export default function Register() {
     return (
         <div className="registerMainContainer">
             <img className="logo" src={logoDark} alt="SimplyTasksLogo" />
+            <div className="warning">
+                <h3>WARNING</h3>
+                <p>Please, do not use your typical data for this registration.</p>
+                <p>
+                    This is a free, hobby project, due to which the backend server is not using
+                    https.
+                </p>
+                <p>Encryption is very basic so do not provide sensitive data.</p>
+                <p>I apologize for the inconvenience.</p>
+            </div>
             <div className="register">
-                <input
+                {/* Abandoned due to the safety issues - unavaliable HTTPS on backend */}
+                {/* <input
                     onChange={handleChange}
                     value={data.email}
                     placeholder="email@example.com"
@@ -20,7 +31,7 @@ export default function Register() {
                     id="email"
                     className={validation.emailValid || data.email === "" ? "" : "noMatch"}
                 />
-                <p>{validation.emailValid || data.email === "" ? "" : "Invalid email!"}</p>
+                <p>{validation.emailValid || data.email === "" ? "" : "Invalid email!"}</p> */}
                 <input
                     onChange={handleChange}
                     value={data.username}
@@ -72,11 +83,7 @@ export default function Register() {
                             onClick={() => {
                                 registerOnBackend(data);
                             }}
-                            disabled={
-                                !validation.emailValid ||
-                                !validation.usernameValid ||
-                                !validation.pwMatch
-                            }
+                            disabled={!validation.usernameValid || !validation.pwMatch}
                         >
                             Register
                         </button>

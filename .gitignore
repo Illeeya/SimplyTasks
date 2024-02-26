@@ -131,3 +131,7 @@ dist
 
 # Custom
 *.pem
+FrontSimplyTasks/.firebaserc
+FrontSimplyTasks/firebase.json
+FrontSimplyTasks/firebaseStuff.txt
+FrontSimplyTasks/.firebase/hosting.ZGlzdA.cache

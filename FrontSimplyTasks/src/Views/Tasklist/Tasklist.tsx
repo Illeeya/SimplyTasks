@@ -1,7 +1,7 @@
 import "./Tasklist.css";
 import useTasklist from "./useTasklist";
 export default function Tasklist() {
-    const { tasksJsx, logOut } = useTasklist();
+    const { tasksJsx, logOut, handleCreate } = useTasklist();
 
     return (
         <div className="tasklistMainContainer">
@@ -9,7 +9,14 @@ export default function Tasklist() {
                 <button className="logOutBtn" onClick={logOut}>
                     LogOut
                 </button>
-                <button className="addTaskBtn">Add Task</button>
+                <button
+                    onClick={() => {
+                        handleCreate();
+                    }}
+                    className="addTaskBtn"
+                >
+                    Add Task
+                </button>
             </nav>
             <div className="tasks">{tasksJsx}</div>
         </div>

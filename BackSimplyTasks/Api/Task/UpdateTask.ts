@@ -1,7 +1,7 @@
 import { Collection } from "mongodb";
 
 export default async function UpdateTask(
-    collection: Collection<Document>,
+    collection: Collection,
     taskId: string,
     text: string,
     modifiedDate: string
