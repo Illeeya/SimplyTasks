@@ -107,7 +107,7 @@ export default function useTasklist() {
     }
 
     async function handleCreate() {
-        if (tasks[0].text == "") return;
+        if (tasks.length > 0 && tasks[0].text === "") return;
         const task: Task = {
             taskId: crypto.randomUUID(),
             userId: userId!,
