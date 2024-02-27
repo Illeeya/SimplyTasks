@@ -1,12 +1,13 @@
-# SimplyTasks - v. 1.0
+# SimplyTasks - v. 1.0.1
 
 Web application made for simple task management.
+Semi-safe wersion running on https://simplytasks.web.app
 
 # Description
 
 Hobby project made as an exercise.
 Frontend stays on Firebase but backend is not yet set up.
-Might set the non-safe version later for general usage.
+~Might set the non-safe version later for general usage.~
 
 ### To do when I get more time to tinker:
 
