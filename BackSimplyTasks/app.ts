@@ -90,6 +90,6 @@ server.post("/registerUser", async (req: Request, res: Response) => {
     res.status(message.success ? 200 : 500).send(JSON.stringify(message));
 });
 
-server.listen(443, () => {
-    console.log("Server HTTP 443");
+server.listen(3000, () => {
+    console.log("Server HTTP 3000");
 });

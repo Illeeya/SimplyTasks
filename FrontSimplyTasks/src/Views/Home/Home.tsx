@@ -2,17 +2,24 @@ import { useNavigate } from "react-router-dom";
 import logoDark from "../../assets/LogoDark.png";
 import "./Home.css";
 import useHome from "./useHome";
+import { BeatLoader } from "react-spinners";
 
 export default function Home() {
     const navigate = useNavigate();
-    const { data, dataValid, handleChange, Login } = useHome();
+    const { data, dataValid, loading, handleChange, Login } = useHome();
     return (
         <div className="homeMainContainer">
             <img className="logo" src={logoDark} alt="SimplyTasksLogo" />
             <h1 className="title">
-                SIMPLY <br />
+                SIMPLY
+                <br />
                 TASKS
             </h1>
+            <div className="info">
+                <h3>Info</h3>
+                <p>Backend runs on a free server that tends to sleep.</p>
+                <p>Waking up might take around a minute, so please be patient.</p>
+            </div>
             <div className="forms">
                 <div className="login">
                     <input
@@ -31,9 +38,13 @@ export default function Home() {
                         type="password"
                         maxLength={50}
                     />
-                    <button onClick={() => Login()} className="btn" disabled={!dataValid}>
-                        Login
-                    </button>
+                    {loading ? (
+                        <BeatLoader className="beatLoader" color="#888" />
+                    ) : (
+                        <button onClick={() => Login()} className="btn" disabled={!dataValid}>
+                            Login
+                        </button>
+                    )}
                 </div>
                 <div className="register">
                     <p>Don't have an account?</p>

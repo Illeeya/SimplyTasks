@@ -16,6 +16,7 @@ const defaultData: Data = {
 export default function useHome() {
     const navigate = useNavigate();
 
+    const [loading, setLoading] = useState<boolean>(false);
     const [data, setData] = useState<Data>(defaultData);
     const [dataValid, setDataValid] = useState<boolean>(false);
 
@@ -44,6 +45,7 @@ export default function useHome() {
 
     async function Login(): Promise<void> {
         try {
+            setLoading(true);
             const response = await fetch(`${config.backendUrl}/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -62,6 +64,8 @@ export default function useHome() {
             }
         } catch (error) {
             ErrorToast(`Login error: ${error}`);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -69,5 +73,5 @@ export default function useHome() {
         return /^[a-zA-Z0-9]{1,25}$/.test(username);
     }
 
-    return { data, dataValid, handleChange, Login };
+    return { data, dataValid, loading, handleChange, Login };
 }

@@ -12,12 +12,13 @@ export default function Register() {
             <div className="warning">
                 <h3>WARNING</h3>
                 <p>Please, do not use your typical data for this registration.</p>
-                <p>
-                    This is a free, hobby project, due to which the backend server is not using
-                    https.
-                </p>
-                <p>Encryption is very basic so do not provide sensitive data.</p>
-                <p>I apologize for the inconvenience.</p>
+                <p>This is a free, hobby project with basic security.</p>
+                <p>Encryption isn't strong so do not provide sensitive data.</p>
+            </div>
+            <div className="info">
+                <h3>Info</h3>
+                <p>Backend runs on a free server that tends to sleep.</p>
+                <p>Waking up might take around a minute, so please be patient.</p>
             </div>
             <div className="register">
                 {/* Abandoned due to the safety issues - unavaliable HTTPS on backend */}
